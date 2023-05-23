@@ -41,14 +41,15 @@ jobs:
     needs: prepare-images
     name: v1.27 - standard
     steps:
-      - name: Checkout Kyverno
-        uses: actions/checkout@v3
-        with:
-          repository: kyverno/kyverno
       - name: Checkout Test Repo
         uses: actions/checkout@v3
         with:
           path: './test'
+      - name: Checkout Kyverno
+        uses: actions/checkout@v3
+        with:
+          repository: kyverno/kyverno
+          path: '../'
       - name: Setup build env
         uses: ./.github/actions/setup-build
         with:
