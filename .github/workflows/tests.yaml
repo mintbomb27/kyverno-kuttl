@@ -51,7 +51,7 @@ jobs:
           repository: kyverno/kyverno
           path: '../'
       - name: Setup build env
-        uses: ./.github/actions/setup-build
+        uses: ./.github/actions/setup-build-env
         with:
           build-cache-key: run-conformance
       - name: Create kind cluster
