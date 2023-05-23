@@ -1,9 +1,12 @@
 name: Kuttl Sample tests
 
 on:
+  push:
+    branches:
+    - 'main'
   pull_request:
     branches:
-      - 'main'
+    - 'main'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
