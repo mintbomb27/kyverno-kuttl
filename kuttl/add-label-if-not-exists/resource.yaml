@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: lfx-config
+  namespace: team-lfx
+data:
+  allowed: '"true"'
+--
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alt-config
+  namespace: team-alt
+  labels:
+    lfx-mentorship: not-kyverno
+data:
+  allowed: '"true"'
+--
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: not-config
+  namespace: some-alt
+data:
+  allowed: '"true"'

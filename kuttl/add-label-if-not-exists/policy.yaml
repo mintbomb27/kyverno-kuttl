@@ -1,0 +1,19 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: lfx-add-labels
+spec:
+  rules:
+  - name: lfx-mentorship
+    match:
+      any:
+      - resources:
+          kinds:
+          - ConfigMap
+          namespaces:
+            - "team-*"
+    mutate:
+      patchStrategicMerge:
+        metadata:
+          labels:
+            +(lfx-mentorship): kyverno
