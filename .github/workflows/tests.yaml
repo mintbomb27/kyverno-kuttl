@@ -1,0 +1,72 @@
+name: Kuttl Sample tests
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  prepare-images:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          repository: kyverno/kyverno
+      - name: Setup build env
+        uses: ./.github/actions/setup-build-env
+        with:
+          build-cache-key: build-images
+      - name: ko build
+        run: VERSION=${{ github.ref_name }} make docker-save-image-all
+      - name: upload images archive
+        uses: actions/upload-artifact@v3
+        with:
+          name: kyverno.tar
+          path: kyverno.tar
+          retention-days: 1
+          if-no-files-found: error
+
+  standard:
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-latest
+    needs: prepare-images
+    name: v1.27 - standard
+    steps:
+      - name: Checkout Kyverno
+        uses: actions/checkout@v3
+        with:
+          repository: kyverno/kyverno
+      - name: Checkout Test Repo
+        uses: actions/checkout@v3
+        with:
+          path: './test'
+      - name: Setup build env
+        uses: ./.github/actions/setup-build
+        with:
+          build-cache-key: run-conformance
+      - name: Create kind cluster
+        run: |
+          export KIND_IMAGE=kindest/node:v1.27.1
+          make kind-create-cluster
+      - name: Download kyverno images archive
+        uses: actions/download-artifact@v3
+        with:
+          name: kyverno.tar
+      - name: Load kyverno images archive in kind cluster
+        run: make kind-load-image-archive
+      - name: Install kyverno
+        run: |
+          export USE_CONFIG=standard
+          make kind-install-kyverno
+      - name: Wait for kyverno ready
+        run: |
+          kubectl wait --namespace kyverno --for=condition=ready pod --selector '!job-name' --timeout=60s
+      - name: Test with kuttl
+        run: |
+          ./.tools/kubectl-kuttl test ./test/kuttl/add-label-if-not-exists
