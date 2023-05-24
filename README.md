@@ -38,3 +38,7 @@ The tests will create a configmap, and a policy, then apply the policy. A Config
     * Expected Result: It should create another ConfigMap(StrategicMergePatch) with the mentioned label
 * To check if the mutation is taking place in a namespace other than `team-*`
     * Expected Result: It should not find any matching resource to apply the mutation
+
+## GitHub Action
+
+Wrote an action based from the Kyverno's existing action for conformance tests with a few modifications. It prepares the image from the kyverno repository, and checks with the test given here.
