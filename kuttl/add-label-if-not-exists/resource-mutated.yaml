@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: not-config
-  namespace: some-alt
+  name: lfx-config
+  namespace: team-lfx
   labels:
     lfx-mentorship: kyverno
 data:
-  accepted: '"true"'
+  allowed: '"true"'

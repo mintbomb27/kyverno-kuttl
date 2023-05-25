@@ -72,4 +72,4 @@ jobs:
           kubectl wait --namespace kyverno --for=condition=ready pod --selector '!job-name' --timeout=60s
       - name: Test with kuttl
         run: |
-          ./.tools/kubectl-kuttl test ./test-workflow/kuttl/add-label-if-not-exists
+          ./.tools/kubectl-kuttl test ./test-workflow/kuttl/
